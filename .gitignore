@@ -1,0 +1,48 @@
+# --- JetBrains IDE ---
+.idea/
+*.iws
+
+# --- VS Code ---
+.vscode/
+*.code-workspace
+
+# --- Claude Code (local / per-machine) ---
+.claude/settings.local.json
+.claude/.credentials.json
+.claude/projects/
+.claude/todos/
+.claude/statsig/
+.claude/shell-snapshots/
+.claude/ide/
+
+# --- Secrets / sensitive files ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+credentials
+credentials.json
+*.secret
+
+# --- OS junk ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.Spotlight-V100
+.Trashes
+
+# --- Logs & backups ---
+*.log
+*.bak
+*.tmp
+*.swp
+*~

@@ -34,14 +34,15 @@ Implication: before suggesting an edit outside these roots, expect it to be bloc
 
 `permissions.allow` is intentionally tight — only a short list of read-only commands (`ls`, read-only `git` subcommands like `status`, `log`, `diff`, `show`, `blame`, `ls-files`, `remote`, `rev-parse`, `config --get/--list`, and the listing forms of `git branch`) is pre-approved. Everything else prompts the user.
 
-`permissions.ask` currently contains `Bash(git add)` — staging always prompts even though it is non-destructive, to give a checkpoint before any commit flow. Keep mutating-but-recoverable commands here rather than in `allow`.
+`permissions.ask` requires explicit confirmation before each invocation. The current entries are:
 
-`permissions.deny` hard-blocks these classes (deny overrides allow):
+- `Bash(git add)` — staging always prompts even though it is non-destructive, to give a checkpoint before any commit flow.
+- **Repo mutation**: `Bash(git commit)`, `Bash(git commit *)`, `Bash(git push)`, `Bash(git push *)` — every commit and push prompts so the user can review the action before history changes or anything reaches a remote.
+- **All of `git branch *`**: every `git branch` invocation that carries any argument prompts, because `git branch <name>` creates a branch. Read-only listings still run without prompting because their exact forms (`git branch`, `git branch -a`, `--list`, `--show-current`, etc.) are matched by explicit `allow` entries, which take precedence over the `git branch *` ask pattern. When adding a new read-only `git branch` variant, add the exact pattern to `allow`; do not loosen the `ask` rule.
 
-- **Repo mutation**: `git commit`, `git commit *`, `git push`, `git push *`.
-- **All of `git branch *`**: every `git branch` invocation that carries any argument is denied, because `git branch <name>` creates a branch. Read-only listings work only because their exact forms (`git branch`, `git branch -a`, `--list`, `--show-current`, etc.) are matched by explicit `allow` entries before the broad deny wildcard can be considered. When adding a new read-only `git branch` variant, add the exact pattern to `allow`; do not loosen the deny.
+`permissions.deny` is currently empty. Repo-mutating commands live in `ask` rather than `deny` so the user can authorize them per call instead of being hard-blocked. If a class of commands must never run under any circumstances, add it here — `deny` overrides `allow`.
 
-When adding permissions, prefer narrow prefix patterns (`Bash(git status*)`) over broad ones (`Bash(git *)`), and keep the `deny` list as the final authority for anything that must never run.
+When adding permissions, prefer narrow prefix patterns (`Bash(git status*)`) over broad ones (`Bash(git *)`), and route mutating commands through `ask` (or `deny` if they must be unconditionally blocked) rather than `allow`.
 
 ## PostToolUse: CLAUDE.md sync reminder
 

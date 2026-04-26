@@ -34,14 +34,14 @@
       "Bash(git rev-parse *)"
     ],
     "ask": [
-      "Bash(git add)"
-    ],
-    "deny": [
+      "Bash(git add)",
       "Bash(git commit)",
       "Bash(git commit *)",
       "Bash(git push)",
       "Bash(git push *)",
       "Bash(git branch *)"
+    ],
+    "deny": [
     ]
   },
   "env": {},

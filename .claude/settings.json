@@ -34,6 +34,12 @@
       "Bash(git rev-parse *)"
     ],
     "ask": [
+      "Bash(rm)",
+      "Bash(rm *)",
+      "Bash(del)",
+      "Bash(del *)",
+      "Bash(rmdir)",
+      "Bash(rmdir *)",
       "Bash(git add)",
       "Bash(git commit)",
       "Bash(git commit *)",
@@ -42,6 +48,10 @@
       "Bash(git branch *)"
     ],
     "deny": [
+      "Bash(Remove-Item)",
+      "Bash(Remove-Item *)",
+      "Bash(git reset)",
+      "Bash(git reset *)"
     ]
   },
   "env": {},

@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "Read(~/.claude/**)",
       "Bash(ls)",
       "Bash(ls *)",
       "Bash(git status)",
@@ -31,7 +32,17 @@
       "Bash(git remote *)",
       "Bash(git config --get *)",
       "Bash(git config --list)",
-      "Bash(git rev-parse *)"
+      "Bash(git rev-parse *)",
+      "Bash(gh pr list)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr view)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr status)",
+      "Bash(gh pr status *)",
+      "Bash(gh pr diff)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks)",
+      "Bash(gh pr checks *)"
     ],
     "ask": [
       "Bash(rm)",
@@ -45,7 +56,8 @@
       "Bash(git commit *)",
       "Bash(git push)",
       "Bash(git push *)",
-      "Bash(git branch *)"
+      "Bash(git branch *)",
+      "Bash(gh pr *)"
     ],
     "deny": [
       "Bash(Remove-Item)",

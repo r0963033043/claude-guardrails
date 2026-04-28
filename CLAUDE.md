@@ -32,13 +32,16 @@ Implication: before suggesting an edit outside these roots, expect it to be bloc
 
 ## Permission model in settings.json
 
-`permissions.allow` is intentionally tight — only a short list of read-only commands (`ls`, read-only `git` subcommands like `status`, `log`, `diff`, `show`, `blame`, `ls-files`, `remote`, `rev-parse`, `config --get/--list`, and the listing forms of `git branch`) is pre-approved. Everything else prompts the user.
+`permissions.allow` is intentionally tight — only a short list of read-only commands (`ls`, read-only `git` subcommands like `status`, `log`, `diff`, `show`, `blame`, `ls-files`, `remote`, `rev-parse`, `config --get/--list`, and the listing forms of `git branch`, plus read-only `gh pr` subcommands `list`, `view`, `status`, `diff`, `checks`) is pre-approved. Everything else prompts the user.
+
+The `Read` tool has one allow entry: `Read(~/.claude/**)`. This auto-approves reads under the user's global Claude config dir (`settings.json`, `sensitive-files.txt`, `hooks/`, `memory/`, and per-project `projects/*/memory/`). The same line works in both the project and global `settings.json` because `~` resolves to the user's home in either context, unlike `$CLAUDE_PROJECT_DIR` which is project-relative. Reads remain gated by `restrict-paths.ps1`, so any sensitive-file pattern is still blocked even when the permission rule allows the path.
 
 `permissions.ask` requires explicit confirmation before each invocation. The current entries are:
 
 - `Bash(git add)` — staging always prompts even though it is non-destructive, to give a checkpoint before any commit flow.
 - **Repo mutation**: `Bash(git commit)`, `Bash(git commit *)`, `Bash(git push)`, `Bash(git push *)` — every commit and push prompts so the user can review the action before history changes or anything reaches a remote.
 - **All of `git branch *`**: every `git branch` invocation that carries any argument prompts, because `git branch <name>` creates a branch. Read-only listings still run without prompting because their exact forms (`git branch`, `git branch -a`, `--list`, `--show-current`, etc.) are matched by explicit `allow` entries, which take precedence over the `git branch *` ask pattern. When adding a new read-only `git branch` variant, add the exact pattern to `allow`; do not loosen the `ask` rule.
+- **All of `gh pr *`**: same precedence pattern as `git branch *`. The broad `Bash(gh pr *)` ask entry catches every PR-mutating verb (`create`, `edit`, `merge`, `close`, `reopen`, `comment`, `review`, `ready`, `lock`, `unlock`, `checkout`, etc.), while the read-only subcommands listed above (`list`, `view`, `status`, `diff`, `checks` — both bare and `*` forms) sit in `allow` and override the broad ask. When adding a new read-only `gh pr` variant, add the exact pattern to `allow`; do not loosen the `gh pr *` ask rule, and do not enumerate mutating verbs individually in `ask` (the broad pattern already covers them).
 - **File removal (bash/cmd forms)**: `Bash(rm)`, `Bash(rm *)`, `Bash(del)`, `Bash(del *)`, `Bash(rmdir)`, `Bash(rmdir *)` — bash and cmd deletion verbs prompt per call so the user can authorize each removal. The PowerShell verb (`Remove-Item`) is *not* in this list; it stays in `deny` (see below).
 
 `permissions.deny` hard-blocks these classes (deny overrides allow, no prompt offered):
